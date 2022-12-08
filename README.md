@@ -8,7 +8,7 @@ Smilegate Winter Dev Camp 2th, Personal Project : Auth System
 * Manage USER CRUD
 
 ## Enviornment
-* Linux 
+* Docker Ubuntu 22.04.1 LTS ( Latest )
 
 ## FrameWork
 * Frontend : [React][React]
