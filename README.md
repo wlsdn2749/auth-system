@@ -13,7 +13,8 @@ Smilegate Winter Dev Camp 2th, Personal Project : Auth System
 ## FrameWork
 * Frontend : [React][React]
 * Backend : [Fastapi][Fastapi]
-* Database : Mysql
+* Database : [Mysql]
 
-[react]: https://github.com/facebook/react "Go react github"
+[React]: https://github.com/facebook/react "Go react github"
 [Fastapi]: https://github.com/tiangolo/fastapi "Go fastapi github"
+[Mysql]: https://www.mysql.com/ "Go Mysql"
