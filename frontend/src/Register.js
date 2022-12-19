@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { fetchToken, setToken } from "./Auth";
 import axios from "axios";
 
-export default function Login(){
+export default function Register(){
     const navigate = useNavigate();
     // what is Navigate?
     const [username, setUsername] = useState("");
@@ -13,6 +13,7 @@ export default function Login(){
 
 
     // check to see if the fields are not empty
+
     const register = () => {
        if((username == "") & (password == "")){
         return;
@@ -34,6 +35,8 @@ export default function Login(){
         .catch(function (error){
             console.log(error, "error");
         })
+       } else {
+        alert("비밀번호가 일치하지 않습니다.");
        }
     };
 
@@ -47,19 +50,31 @@ export default function Login(){
                     ) : (
                         <div>
                             <form>
-                                <label style={{ marginRight: 10}}>Input Username</label>
+                                <label>Input E-mail Address</label>
+                                <input
+                                    type="text"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                                <label>Input Username</label>
                                 <input
                                     type="text"
                                     onChange={(e) => setUsername(e.target.value)}
                                 />
 
-                                <label style={{ marginRight: 10}}>Input Password</label>
+                                <label>Input Password</label>
                                 <input
                                     type="text"
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
 
-                                <button onClick={login}>Login</button>
+                                <label>Input Confirm Password</label>
+                                <input
+                                    type="text"
+                                    onChange={(e) => setPassword2(e.target.value)}
+                                />
+                                {/* <button type="submit">회원가입 하기</button> */}
+
+                                <button onClick={register}>Register</button>
                             </form>
                         </div>
                     )}
