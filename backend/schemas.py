@@ -15,6 +15,7 @@ class Item(ItemBase):
         orm_mode = True
 
 class UserBase(BaseModel):
+    name: str | None = None
     email: str
 
 class UserCreate(UserBase):
