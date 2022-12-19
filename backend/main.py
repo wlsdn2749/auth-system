@@ -1,12 +1,40 @@
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+import jwt
+from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 
 import crud, models, schemas
 from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
+
+test_user = {
+    "username" : "temitope",
+    "password" : "temipassword",
+}
+
 app = FastAPI()
 
+origins = {
+    "http://localhost",
+    "http://localhost:3000",
+}
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = origins,
+    allow_credentials = True,
+    allow_methods = ["*"],
+    allow_headers = ["*"],
+)
+
+SECRET_KEY = "MY_KEY"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRES_MINUTES = 800
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Dependency
 
@@ -47,3 +75,15 @@ def create_item_for_user(
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return items
+
+@app.post("/login", response_model=schemas.User)
+async def user_login(loginitem: schemas.UserCreate, db: Session = Depends(get_db)):
+
+    data = jsonable_encoder(loginitem)
+    if data['username'] == test_user['username'] and data['password'] == test_user['password']:
+
+        encoded_jwt = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+        return {"token": encoded_jwt}
+    
+    else:
+        return {"message":"login failed"}
