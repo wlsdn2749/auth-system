@@ -16,22 +16,28 @@ export default function Login(){
         return;
        } else {
         // make api call to our backend..
-        axios
-        .post("http://localhost:8000/login",{
-            username: username,
-            password: password,
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+
+        axios({
+            method: "post",
+            url: "http://localhost:8000/token",
+            data: formData,
+            headers: { "Content-Type": "multipart/form-data"}
         })
         .then(function (response) {
-            console.log(response.data.token, "response.data.token");
-            if (response.data.token){
-                setToken(response.data.token);
-                navigate("/profile");
+            console.log(response.data, "response.data.token");
+            if (response.data.access_token){
+                setToken(response.data.access_token);
+                // navigate("/profile");
             }
         })
         .catch(function (error){
             console.log(error, "error");
         })
        }
+       navigate("/");
     };
 
     return (

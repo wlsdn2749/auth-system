@@ -4,7 +4,7 @@ export default function Profile(){
     const navigate = useNavigate();
 
     const signOut = () => {
-        localStorage.removeItem("temitope");
+        localStorage.removeItem("login-token");
         navigate("/");
     };
 

@@ -21,23 +21,30 @@ export default function Register(){
         // make api call to our backend..
         axios
         .post("http://localhost:8000/register",{
+            name: username,
             email: email,
-            username: username,
             password: password,
         })
         .then(function (response) {
-            console.log(response.data.token, "response.data.token");
-            if (response.data.token){
-                setToken(response.data.token);
-                navigate("/profile");
-            }
+            console.log(response.data, "response data");
+            console.log(1);
+            // if (response.data){
+            //     navigate("/");
+            // }
+            // navigate("/");
+            
+            // 왜 여기에 코드를 작성하면 오류가 나는걸까..?
+            // 
         })
         .catch(function (error){
             console.log(error, "error");
+            alert("이 아디를 가진 유저가 이미 존재합니다.")
+            navigate("/")
         })
        } else {
         alert("비밀번호가 일치하지 않습니다.");
        }
+       navigate("/");
     };
 
     return (

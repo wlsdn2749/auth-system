@@ -29,6 +29,10 @@ export default function Main(){
         navigate("/register");
     };
 
+    const onClickButtonProfile = () => {
+        navigate("/profile");
+    };
+
     return(
         <Template>
             <Logo>
@@ -38,6 +42,9 @@ export default function Main(){
             </StyleButton>
             <StyleButton onClick= { onClickButtonRegister }>
                 회원가입
+            </StyleButton>
+            <StyleButton onClick= { onClickButtonProfile }>
+                프로필(로그인을 해야 접속가능)
             </StyleButton>
         </Template>
     )

@@ -1,13 +1,12 @@
 import { useLocation, Navigate } from "react-router-dom"
 
 export const setToken = (token) => {
-
-    localStorage.setItem('temitope', token)
+    localStorage.setItem('login-token', token)
 }
 
 export const fetchToken = (token) => {
 
-    return localStorage.getItem('temitope')
+    return localStorage.getItem('login-token')
 }
 
 export function RequireToken({children}){

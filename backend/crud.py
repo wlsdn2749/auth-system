@@ -13,12 +13,11 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all
 
 def create_user(db : Session, user: schemas.UserCreate):
-    hashed_password = user.password
-    db_user = models.User(name = user.name, email=user.email, hashed_password = hashed_password)
+    db_user = models.User(email=user['email'], hashed_password = user['hashed_password'])
     db.add(db_user) # add instance object to session
     db.commit() # commit = save
     db.refresh(db_user) # refresh your instance
-    return db_user
+    return user
 
 def get_items(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Item).offset(skip).limit(limit).all()
