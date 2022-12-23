@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { fetchToken, setToken } from "./Auth";
+import { redirect } from "react-router-dom";
+import { fetchAccessToken, setAccessToken, setRefreshToken, fetchRefreshToken } from "./Auth";
 import axios from "axios";
 
 export default function Login(){
@@ -29,15 +30,17 @@ export default function Login(){
         .then(function (response) {
             console.log(response.data, "response.data.token");
             if (response.data.access_token){
-                setToken(response.data.access_token);
+                setRefreshToken(response.data.refresh_token);
+                setAccessToken(response.data.access_token);
                 // navigate("/profile");
+                return navigate("/");
             }
         })
         .catch(function (error){
             console.log(error, "error");
         })
        }
-       navigate("/");
+       return navigate("/");
     };
 
     return (
@@ -45,7 +48,7 @@ export default function Login(){
             <div style={{ minHeight: 800, marginTop: 30}}>
                 <h1>login page</h1>
                 <div style={{ marginTop: 30}}>
-                    {fetchToken() ? (
+                    {fetchAccessToken() ? (
                         <p>you are loggin in</p>
                     ) : (
                         <div>

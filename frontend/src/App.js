@@ -3,7 +3,7 @@ import Login from "./Login";
 import Profile from "./Profile";
 import Main from "./Main";
 import Register from "./Register"
-import { RequireToken } from "./Auth";
+import { RequireAccessToken } from "./Auth";
 import './App.css';
 
 function App() {
@@ -15,9 +15,9 @@ function App() {
         <Route 
           path ="/profile"
           element = {
-            <RequireToken>
+            <RequireAccessToken>
               <Profile/>
-            </RequireToken>
+            </RequireAccessToken>
           }
         />
         <Route path ="/register" element = {<Register/>}/>

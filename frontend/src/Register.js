@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { fetchToken, setToken } from "./Auth";
+import { fetchAccessToken, setAccessToken } from "./Auth";
 import axios from "axios";
 
 export default function Register(){
@@ -52,7 +52,7 @@ export default function Register(){
             <div style={{ minHeight: 800, marginTop: 30}}>
                 <h1>login page</h1>
                 <div style={{ marginTop: 30}}>
-                    {fetchToken() ? (
+                    {fetchAccessToken() ? (
                         <p>you are loggin in</p>
                     ) : (
                         <div>

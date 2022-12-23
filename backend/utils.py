@@ -12,8 +12,13 @@ from fastapi import Depends, HTTPException, status
 ALGORITHM = "HS256"
 # JWT_SECRET_KEY = os.environ['JWT_SECRET_KEY']     # should be kept secret
 # JWT_REFRESH_SECRET_KEY = os.environ['JWT_REFRESH_SECRET_KEY']      # should be kept secret
+
+# to get a string like this run:
+# openssl rand -hex 32
 SECRET_KEY = "07f7576d46d2871ba587ceabd235f9234967ac12033c47d8047662c21c59732b"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_REFRESH_KEY = "7c49dfce5312a8a12d4e159f464b8d1ac7f4af35c634fd45168859c4d0bd0cf9"
+ACCESS_TOKEN_EXPIRE_MINUTES = 5
+REFRESH_TOKEN_EXPIRE_MINUTES = 1440
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -39,12 +44,22 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta # 아니면 지정
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15) # 기본이 15분
+        expire = datetime.utcnow() + timedelta(minutes=5) # 기본이 15분
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt  # encoded_jwt == access_token??
 
-async def get_current_user(token: str = Depends(oauth2_scheme),
+def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy() # dict
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta # 아니면 지정
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=1440) # 기본이 1일
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt  # encoded_jwt == refresh_token??
+
+def get_current_user(token: str = Depends(oauth2_scheme),
                            db = Session):
     """
         jwt를 decode를 하기 위해서는
@@ -64,15 +79,15 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     ) # 401 errors
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # jwt를 decode
-        username : str = payload.get("sub") 
+        email : str = payload.get("sub") 
         
-        if username is None:
+        if email is None:
             raise credentials_exception
-        token_data = schemas.TokenData(username=username)
+        token_data = schemas.TokenData(email=email)
         
     except JWTError:
         raise credentials_exception
-    user = crud.get_user_by_email(db, username=token_data.username)
+    user = crud.get_user_by_email(db, email=token_data.email)
     
     if user is None:
         raise credentials_exception

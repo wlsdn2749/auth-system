@@ -5,7 +5,7 @@ import models, schemas
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
-def get_user_by_email(db: Session, email: str) -> models.User:
+def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
     # query.first는 non-iteratble User객체를 가져온다.
 

@@ -17,8 +17,6 @@ test_user = {
     "password" : "temipassword",
 }
 
-# to get a string like this run:
-# openssl rand -hex 32
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 fake_users_db = {
@@ -81,30 +79,30 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/users/", response_model = schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
+# @app.post("/users/", response_model = schemas.User)
+# def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+#     db_user = crud.get_user_by_email(db, email=user.email)
+#     if db_user:
+#         raise HTTPException(status_code=400, detail="Email already registered")
+#     return crud.create_user(db=db, user=user)
 
-@app.get("/users/", response_model=list[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    return users
+# @app.get("/users/", response_model=list[schemas.User])
+# def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     users = crud.get_users(db, skip=skip, limit=limit)
+#     return users
 
-@app.get("/users/{user_id}", response_model = schemas.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
+# @app.get("/users/{user_id}", response_model = schemas.User)
+# def read_user(user_id: int, db: Session = Depends(get_db)):
+#     db_user = crud.get_user(db, user_id=user_id)
+#     if db_user is None:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     return db_user
 
-@app.post("/users/{user_id}/items/", response_model=schemas.Item)
-def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
-):
-    return crud.create_user_item(db=db, item=item, user_id=user_id)
+# @app.post("/users/{user_id}/items/", response_model=schemas.Item)
+# def create_item_for_user(
+#     user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
+# ):
+#     return crud.create_user_item(db=db, item=item, user_id=user_id)
 
 
 @app.get("/items/", response_model=list[schemas.Item])
@@ -112,19 +110,7 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return items
 
-# @app.post("/login", response_model=schemas.User)
-# async def user_login(loginitem: schemas.UserCreate, db: Session = Depends(get_db)):
-
-#     data = jsonable_encoder(loginitem)
-#     if data['username'] == test_user['username'] and data['password'] == test_user['password']:
-
-#         encoded_jwt = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
-#         return {"token": encoded_jwt}
-    
-#     else:
-#         return {"message":"login failed"}
-    
-@app.post("/token", response_model=schemas.Token)
+@app.post("/token", response_model=schemas.RefreshIncludedToken)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                                  db: Session = Depends(get_db)):                                 
     # user = authenticate_user(fake_users_db, form_data.username, form_data.password) # 인증
@@ -136,11 +122,15 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate" : "Bearer"},
         )
     # if Users?
+    refresh_token = utils.create_refresh_token(
+        data = {"sub": user.email},
+        expires_delta=timedelta(minutes=utils.REFRESH_TOKEN_EXPIRE_MINUTES)
+    )
     access_token = utils.create_access_token(
         data={"sub": user.email},
         expires_delta=timedelta(minutes=utils.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    return {"access_token" : access_token, "token_type" : "bearer"}
+    return {"refresh_token": refresh_token, "access_token" : access_token, "token_type" : "bearer"}
 
 
 @app.post('/register', summary="Create new user", response_model=schemas.User)
@@ -154,10 +144,15 @@ async def create_user(data: schemas.UserCreate, db : Session = Depends(get_db)):
             detail="User with this email already exist"
         )
     user = {
-        'name' : data.name,
         'email': data.email,
         'hashed_password': utils.get_hashed_password(data.password),
     }
     created_user = crud.create_user(db=db, user=user)
     return created_user # id, is_active, UserBase....
 
+@app.get("/profile", response_model = schemas.User)
+async def user_profile(token: str = Depends(oauth2_scheme),
+                         db: Session = Depends(get_db)):
+    user = utils.get_current_user(token, db)
+    print(user)
+    return user

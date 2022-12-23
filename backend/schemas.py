@@ -15,26 +15,24 @@ class Item(ItemBase):
         orm_mode = True
 
 class UserBase(BaseModel):
-    name: str | None = None
     email: str
 
 class UserCreate(UserBase):
     password: str
 
-# class User(UserBase):
-#     id: int
-#     is_active: bool
-#     items: list[Item] = []
-
-#     class Config:
-#         orm_mode = True
-    
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+class RefreshIncludedToken(Token):
+    refresh_token: str
+
 class TokenData(BaseModel):
-    username: str | None = None
+    email: str | None = None
 
 class User(UserBase):
-    hashed_password: str
+    id: int
+    is_activate = bool
+
+    class Config:
+        orm_mode = True
