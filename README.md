@@ -24,15 +24,21 @@ Smilegate Winter Dev Camp 2th, Personal Project : Auth System
 > 개발관련 과정에서 궁금했던 부분 등 [Not Yet]
     
 - Frontend에서 Backend로 OAuthPasswordBearer를 하기 위하여 formdata를 넘기는데, 그냥 json으로 넘겨서 토큰을 받으면 되면 안되나요? OAuthPasswordBearer의 장점이 궁금합니다.
-
+    - 구현방법의 차이.
 - token을 넘겨서 localstorage에 넘기는것 까지는 확인했는데
 localstorage의 key를 보면 고정으로 되어있는데 클라이언트마다 다른 localstorage를 사용하는건가요? 클라이안트마다 독립적으로 사용이 가능한 것인가 궁금합니다
-
+    - localstorage는 도메인 단위로사용, 브라우저 창 단위인 세션보다 조금더 크다.
 - 대부분의 jwt는 refreshtoken을 함께 사용한다고 들었는데
 refreshtoken도 같이 로컬스토리지에 보낸다음에 저장해서 사용하면 되는건가요? 만약 그렇다면 refreshtoken과 accesstoken은 어떨때 비교하여 어떻게 backend에서 frontend에 accesstoken을 재발급해주나요?
-
+    -  관련 문서가 많다 찾아보길 권유
 - react에서 새창이 열리는 것과 같은 다른 세션을 사용하게    됬을때의   로그인이 유지되게끔 하려면 어떻게 해야하나요?
-    
+    - AccessToken이 있으면 확인 절차를 거쳐서 자동적으로 유지가 된다
+
+### ++[12/24]
+- backend에서 어떻게 frontend로 인증토근 정보를 쿠키로 넘기는가?
+- 3rd party login 구현이 어떤 로직으로 돌아가는지 궁금하다.
+- 토큰 재발급 절차를 잘 모르곘다 ..
+
 
 [React]: https://github.com/facebook/react "Go react github"
 [Fastapi]: https://github.com/tiangolo/fastapi "Go fastapi github"
