@@ -20,7 +20,11 @@ flex-direction: column;
 `;
 
 function LoginBlock({ children }) {
-    return <StyledLoginBlock>{children}</StyledLoginBlock>;
-  }
+    return (
+      <StyledLoginBlock>
+        {children}
+      </StyledLoginBlock>
+    )
+}
   
 export default LoginBlock;
