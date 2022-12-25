@@ -185,6 +185,7 @@ sketch
 
 ### preference ###
 secrets.json
+credentials.json
 .bashrc
 
 # End of https://www.toptal.com/developers/gitignore/api/react,python

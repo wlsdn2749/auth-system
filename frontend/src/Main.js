@@ -73,9 +73,9 @@ export default function Main(){
             </StyleButton>
             <div>
                 {fetchAccessToken() ? (
-                    <p>login</p>
+                    <p>현재 로그인 중입니다.</p>
                 ) : (
-                    <p>logout</p>
+                    <p>현재 로그인이 아닙니다.</p>
                 )}
             </div>
         </Template>

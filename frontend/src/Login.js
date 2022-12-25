@@ -38,6 +38,7 @@ export default function Login(){
         })
         .catch(function (error){
             console.log(error, "error");
+            alert(error.message + "회원가입 또는 인증이 필요합니다.")
         })
        }
        return navigate("/");

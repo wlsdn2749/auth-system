@@ -3,6 +3,7 @@ import Login from "./Login";
 import Profile from "./Profile";
 import Main from "./Main";
 import Register from "./Register"
+import EmailVerify from "./EmailVerify";
 import { RequireAccessToken } from "./Auth";
 import './App.css';
 
@@ -21,6 +22,7 @@ function App() {
           }
         />
         <Route path ="/register" element = {<Register/>}/>
+        <Route path ="/email-verify" element = {<EmailVerify/>}/>
         
       </Routes>
       

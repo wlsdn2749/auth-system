@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Component, useState } from "react";
 import { useNavigate } from "react-router";
 import { fetchAccessToken, setAccessToken } from "./Auth";
 import axios from "axios";
@@ -11,9 +11,7 @@ export default function Register(){
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
 
-
     // check to see if the fields are not empty
-
     const register = () => {
        if((username == "") & (password == "")){
         return;
@@ -27,7 +25,9 @@ export default function Register(){
         })
         .then(function (response) {
             console.log(response.data, "response data");
-            console.log(1);
+            alert("인증을 위한 화면으로 이동합니다.")
+            navigate("/email-verify");
+            //console.log(1);
             // if (response.data){
             //     navigate("/");
             // }
@@ -44,11 +44,12 @@ export default function Register(){
        } else {
         alert("비밀번호가 일치하지 않습니다.");
        }
-       navigate("/");
+       return navigate("/");
     };
 
     return (
         <>
+        <div>
             <div style={{ minHeight: 800, marginTop: 30}}>
                 <h1>login page</h1>
                 <div style={{ marginTop: 30}}>
@@ -87,6 +88,7 @@ export default function Register(){
                     )}
                 </div>
             </div>
+        </div>
         </>
     );
 }

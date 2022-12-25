@@ -30,9 +30,18 @@ class RefreshIncludedToken(Token):
 class TokenData(BaseModel):
     email: str | None = None
 
+
+class TokenDataModel(BaseModel):
+    access_token: str
+    token_type: str
+    email: str    
+    
+    # class Config:
+    #     orm_mode = True
+
 class User(UserBase):
-    id: int
-    is_activate = bool
+    # id: int
+    # is_activate = bool
 
     class Config:
         orm_mode = True

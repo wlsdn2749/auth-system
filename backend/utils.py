@@ -3,6 +3,14 @@ import os
 from datetime import datetime, timedelta
 from jose import jwt
 from sqlalchemy.orm import Session
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from googleapiclient import errors
+from email.message import EmailMessage
+import base64
 import crud, schemas
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
@@ -92,3 +100,51 @@ def get_current_user(token: str = Depends(oauth2_scheme),
     if user is None:
         raise credentials_exception
     return user
+
+def check_my_token(email: str, token: str, db: Session):
+    user = crud.get_user_by_email(db, email=email)
+    if user is None:
+        return False
+    print(user)
+    mytoken = str(user.id) + user.email + "sgd"
+    if token == mytoken:
+        return True
+    else:
+        return False
+    
+
+# def gmail_authenticate():
+#     SCOPES = ['https://mail.google.com/']
+#     creds = None
+#     if os.path.exists('token.json'):
+#         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+#     if not creds or not creds.valid:
+#         if creds and creds.expired and creds.refresh_token:
+#             creds.refresh(Request())
+#         else:
+#             flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+#             creds = flow.run_local_server(port=0)
+#         with open('token.json', 'w') as token:
+#             token.write(creds.to_json())
+#     return build('gmail', 'v1', credentials=creds)
+
+# def create_message(sender, to, subject, message_text):
+#     message = EmailMessage()
+#     message["From"] = sender
+#     message["To"] = to.split(",")
+#     message["Subject"] = subject
+#     message.set_content(message_text)
+#     return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode('utf8')}
+
+# def send_message(service, user_id, message):
+#     try:
+#         message = service.users().messages().send(userId=user_id, body=message).execute()
+#         print('Message Id: %s' % message['id'])
+#         return message
+#     except errors.HttpError as error:
+#         print('An error occurred: %s' % error)
+
+# def mail(to, subject, content):
+#     service = gmail_authenticate()
+#     message = create_message("보내는사람", "받는사람", "제목", "내용")
+#     send_message(service, "me", message)
